@@ -4,13 +4,14 @@ require "faraday"
 
 module Binford
   class Github
+    API_URL = "https://api.github.com"
     def initialize(token:, serializer: Serializers::Json.new)
       headers = {
         "Content-Type" => "application/json",
         "Accept" => "application/vnd.github.inertia-preview+json",
         "Authorization" => "token #{token}"
       }
-      @conn = Faraday.new(url: "https://api.github.com", headers: headers)
+      @conn = Faraday.new(url: API_URL, headers: headers)
       @serializer = serializer
     end
 
@@ -26,9 +27,13 @@ module Binford
       fetch("/projects/columns/#{column_id}/cards")
     end
 
+    def issue(owner, repo, issue_id)
+      fetch("repos/#{owner}/#{repo}/issues/#{issue_id}")
+    end
+
     def project_story_points(column_id, regex: /SP:\s*(\d+\.*\d*)/)
-      project_cards(column_id)&.map do |x|
-        x[:note].scan(regex).flatten.first
+      project_cards(column_id)&.map do |data|
+        (data[:note] || fetch(data[:content_url].sub(API_URL, ""))[:body]).scan(regex).flatten.first
       end.compact
     end
 
