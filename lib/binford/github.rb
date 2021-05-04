@@ -26,6 +26,12 @@ module Binford
       fetch("/projects/columns/#{column_id}/cards")
     end
 
+    def project_story_points(column_id, regex: /SP:\s*(\d+\.*\d*)/)
+      project_cards(column_id)&.map do |x|
+        x[:note].scan(regex).flatten.first
+      end.compact
+    end
+
     private
 
     attr_reader :conn, :serializer
