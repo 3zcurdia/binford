@@ -4,7 +4,8 @@ require "faraday"
 
 module Binford
   class Github
-    API_URL = "https://api.github.com"
+    API_URL = "https://api.github.com".freeze
+    
     def initialize(token:, serializer: Serializers::Json.new)
       headers = {
         "Content-Type" => "application/json",
