@@ -1,4 +1,6 @@
-require 'nokogiri'
+# frozen_string_literal: true
+
+require "nokogiri"
 
 module Binford
   module Serializers

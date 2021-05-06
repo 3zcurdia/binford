@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "binford"
+
+if ARGV.empty?
+  puts "Gemfile.lock must be given"
+  exit(1)
+end
+
+puts Binford::GemfileStats.new(ARGV[0]).stats.to_json
