@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["ing.ezcurdia@gmail.com"]
 
   spec.summary       = "The Toolkit with more power!"
-  spec.description   = "Toolkit with more power for github"
+  spec.description   = "More tools, more power!"
   spec.homepage      = "https://github.com/3zcurdia/binford"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
