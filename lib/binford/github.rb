@@ -3,49 +3,41 @@
 require "faraday"
 
 module Binford
-  class Github
-    API_URL = "https://api.github.com"
-    def initialize(token:, serializer: Serializers::Json.new)
-      headers = {
-        "Content-Type" => "application/json",
-        "Accept" => "application/vnd.github.inertia-preview+json",
-        "Authorization" => "token #{token}"
-      }
-      @conn = Faraday.new(url: API_URL, headers: headers)
-      @serializer = serializer
+  class Github < WebService
+    def initialize(token:)
+      super("https://api.github.com", serializer: Serializers::Json.new)
+      @token = token
     end
 
     def projects(owner, repo)
-      fetch("repos/#{owner}/#{repo}/projects")
+      get("repos/#{owner}/#{repo}/projects")
     end
 
     def project_columns(project_id)
-      fetch("/projects/#{project_id}/columns")
+      get("/projects/#{project_id}/columns")
     end
 
     def project_cards(column_id)
-      fetch("/projects/columns/#{column_id}/cards")
+      get("/projects/columns/#{column_id}/cards")
     end
 
-    def issue(owner, repo, issue_id)
-      fetch("repos/#{owner}/#{repo}/issues/#{issue_id}")
-    end
-
-    def project_story_points(column_id, regex: /SP:\s*(\d+\.*\d*)/)
+    def project_story_points(column_id)
+      regex = /SP:\s*(\d+\.*\d*)/
       project_cards(column_id)&.map do |data|
-        (data[:note] || fetch(data[:content_url].sub(API_URL, ""))[:body]).scan(regex).flatten.first
-      end.compact
+        (data[:note] || get(data[:content_url].sub(base_url, ""))[:body]).scan(regex).flatten.first
+      end&.compact
     end
 
     private
 
-    attr_reader :conn, :serializer
+    attr_reader :token
 
-    def fetch(path)
-      response = conn.get(path)
-      return unless response.success?
-
-      serializer.call(response.body)
+    def default_headers
+      {
+        "Content-Type" => "application/json",
+        "Accept" => "application/vnd.github.inertia-preview+json",
+        "Authorization" => "token #{token}"
+      }
     end
   end
 end
