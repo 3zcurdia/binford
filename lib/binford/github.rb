@@ -10,7 +10,7 @@ module Binford
     end
 
     def projects(owner, repo)
-      get("repos/#{owner}/#{repo}/projects")
+      get("/repos/#{owner}/#{repo}/projects")
     end
 
     def project_columns(project_id)
@@ -18,14 +18,11 @@ module Binford
     end
 
     def project_cards(column_id)
-      get("/projects/columns/#{column_id}/cards")
-    end
-
-    def project_story_points(column_id)
       regex = /SP:\s*(\d+\.*\d*)/
-      project_cards(column_id)&.map do |data|
-        (data[:note] || get(data[:content_url].sub(base_url, ""))[:body]).scan(regex).flatten.first
-      end&.compact
+      get("/projects/columns/#{column_id}/cards")&.map do |data|
+        data[:note] ||= get(data[:content_url].sub(base_url, ""))[:body]
+        data[:points] = data[:note].scan(regex).flatten.first
+      end
     end
 
     private
