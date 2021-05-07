@@ -19,9 +19,10 @@ module Binford
 
     def project_cards(column_id)
       regex = /SP:\s*(\d+\.*\d*)/
-      get("/projects/columns/#{column_id}/cards")&.map do |data|
+      get("/projects/columns/#{column_id}/cards")&.map do |raw|
         data[:note] ||= get(data[:content_url].sub(base_url, ""))[:body]
         data[:points] = data[:note].scan(regex).flatten.first
+        data
       end
     end
 
