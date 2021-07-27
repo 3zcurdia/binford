@@ -8,6 +8,7 @@ require_relative "binford/github"
 require_relative "binford/ruby_toolbox"
 require_relative "binford/ruby_gems"
 require_relative "binford/gemfile_stats"
+require_relative "binford/trends"
 
 module Binford
   class Error < StandardError; end
