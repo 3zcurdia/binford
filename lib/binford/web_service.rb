@@ -4,6 +4,8 @@ require "faraday"
 
 module Binford
   class WebService
+    attr_reader :base_url
+
     def initialize(base_url, serializer:)
       @base_url = base_url
       @serializer = serializer
@@ -18,7 +20,7 @@ module Binford
 
     protected
 
-    attr_reader :base_url, :serializer
+    attr_reader :serializer
 
     def conn
       @conn ||= Faraday.new(url: base_url, headers: default_headers)
