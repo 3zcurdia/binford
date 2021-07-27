@@ -66,7 +66,7 @@ module Binford
 
     def rails_gems
       @rails_gems ||= %w[actionpack actionview actioncable actionmailer activerecord
-        active_model_serializers activejob activesupport activemodel activestorage activeadmin]
+                         active_model_serializers activejob activesupport activemodel activestorage activeadmin]
     end
   end
 end
