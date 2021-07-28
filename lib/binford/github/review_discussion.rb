@@ -3,7 +3,7 @@
 module Binford
   module Github
     class ReviewDiscussion
-      include ::Binford::Utils
+      include Binford::Utils
 
       attr_reader :conversation
 

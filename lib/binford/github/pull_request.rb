@@ -3,11 +3,12 @@
 module Binford
   module Github
     class PullRequest
-      include ::Binford::Utils
+      include Binford::Utils
       attr_reader :id, :data
 
-      def initialize(data)
+      def initialize(data, api_client: nil)
         @data = data
+        @api = api_client || ApiClient.new
       end
 
       def churn
