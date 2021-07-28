@@ -2,10 +2,10 @@
 
 module Binford
   module Github
-    class Service < WebService
-      def initialize(token:)
+    class ApiClient < WebService
+      def initialize(token: nil)
         super("https://api.github.com", serializer: Serializers::Json.new)
-        @token = token
+        @token = token || Binford.configuration.github_token
       end
 
       def url_to_path(url)

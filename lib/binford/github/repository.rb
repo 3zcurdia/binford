@@ -3,39 +3,45 @@
 module Binford
   module Github
     class Repository
-      attr_reader :client, :owner_repo
+      attr_reader :api, :owner_repo
 
-      def initialize(owner_repo, client:)
-        @client = client
+      def initialize(owner_repo, api_client: nil)
         @owner_repo = owner_repo
+        @api = api_client || ApiClient.new
       end
 
-      def pulls
-        client.get("/repos/#{owner_repo}/pulls")
+      def pulls(state: "all", page: "1")
+        api.get("/repos/#{owner_repo}/pulls?state=#{state}&per_page=100&page=#{page}")
       end
 
       def pull(id)
-        client.get("/repos/#{owner_repo}/pulls/#{id}")
+        api.get("/repos/#{owner_repo}/pulls/#{id}")
+      end
+
+      def pull_discussion(id)
+        commits = Thread.new { pull_commits(id) }
+        comments = Thread.new { pull_reviews(id) }
+        ReviewDiscussion.new(commits.value, comments.value)
       end
 
       def pull_reviews(id)
-        client.get("/repos/#{owner_repo}/pulls/#{id}/comments?per_page=100")
+        api.get("/repos/#{owner_repo}/pulls/#{id}/comments?per_page=100")
       end
 
       def pull_commits(id)
-        client.get("/repos/#{owner_repo}/pulls/#{id}/commits?per_page=100")
+        api.get("/repos/#{owner_repo}/pulls/#{id}/commits?per_page=100")
       end
 
       def issues
-        client.get("/repos/#{owner_repo}/issues")
+        api.get("/repos/#{owner_repo}/issues")
       end
 
       def issue(id)
-        client.get("/repos/#{owner_repo}/issues/#{id}")
+        api.get("/repos/#{owner_repo}/issues/#{id}")
       end
 
       def projects
-        client.get("/repos/#{owner_repo}/projects")
+        api.get("/repos/#{owner_repo}/projects")
       end
     end
   end

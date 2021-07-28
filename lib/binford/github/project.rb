@@ -5,21 +5,21 @@ module Binford
     class Project
       STORY_POINTS_REGEX = /SP:\s*(\d+\.*\d*)/.freeze
 
-      attr_reader :id, :client
+      attr_reader :api, :id
 
-      def initialize(id, client:)
+      def initialize(id, api_client: nil)
         @id = id
-        @client = client
+        @api = api_client || ApiClient.new
       end
 
       def columns
-        client.get("/projects/#{id}/columns")
+        api.get("/projects/#{id}/columns")
       end
 
       def cards(column_id)
-        client.get("/projects/columns/#{column_id}/cards")&.map do |data|
-          content_path = client.url_to_path(data[:content_url])
-          data[:note] ||= client.get(content_path)[:body]
+        api.get("/projects/columns/#{column_id}/cards")&.map do |data|
+          content_path = api.url_to_path(data[:content_url])
+          data[:note] ||= api.get(content_path)[:body]
           data[:points] = data[:note].scan(STORY_POINTS_REGEX).flatten.first.to_f
           data
         end
