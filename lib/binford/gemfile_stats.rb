@@ -4,6 +4,7 @@ module Binford
   class GemfileStats
     def initialize(file_path)
       @file_path = file_path
+      @lock_file = file_path.end_with?("Gemfile.lock")
     end
 
     def stats
@@ -18,14 +19,24 @@ module Binford
 
     private
 
-    attr_reader :file_path
+    attr_reader :file_path, :lock_file
 
     def parse_gems
-      out = {}
-      File.open(file_path).each do |line|
-        out[Regexp.last_match(1).tr(" ", "")] = Regexp.last_match(2) if line =~ /(.*)\s\(([\d.]*)\)/
+      File.open(file_path).each_with_object(acc) do |line, acc|
+        next unless line.match?(parser_regex)
+
+        gem = Regexp.last_match(1).tr(" ", "")
+        version = Regexp.last_match(2)
+        acc[gem] = version
       end
-      out
+    end
+
+    def parser_regex
+      @parser_regex ||= if lock_file
+        /(.*)\s\(([\d.]*)\)/
+      else
+        /gem\s+['"]([[:word:]\-\_]*)['"](\s*,\s*['"][\s\~>=]*[\d.]*['"])?/
+      end
     end
 
     def analyze(gem, version)
