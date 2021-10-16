@@ -13,7 +13,8 @@ module Binford
       {
         name: gem,
         score: score,
-        description: description
+        description: description,
+        category: category
       }
     end
 
@@ -23,6 +24,10 @@ module Binford
 
     def description
       @description ||= document&.xpath("/html/body/section/div/section/div/div[4]/div")&.text
+    end
+
+    def category
+      @caregory ||= document&.xpath("/html/body/section/div/section/div/div[1]/div[2]/div[2]/div/a/p[2]")&.text
     end
 
     def document
