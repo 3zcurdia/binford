@@ -6,11 +6,11 @@ module Binford
   end
 
   class << self
-    attr_accessor :configuration
-  end
+    attr_writer :configuration
 
-  def self.configuration
-    @configuration ||= Configuration.new
+    def configuration
+      @configuration ||= Configuration.new
+    end
   end
 
   def self.configure

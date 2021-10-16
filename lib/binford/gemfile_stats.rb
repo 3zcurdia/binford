@@ -33,10 +33,10 @@ module Binford
 
     def parser_regex
       @parser_regex ||= if lock_file
-        /(.*)\s\(([\d.]*)\)/
-      else
-        /gem\s+['"]([[:word:]\-\_]*)['"](\s*,\s*['"][\s\~>=]*[\d.]*['"])?/
-      end
+                          /(.*)\s\(([\d.]*)\)/
+                        else
+                          /gem\s+['"]([[:word:]\-_]*)['"](\s*,\s*['"][\s~>=]*[\d.]*['"])?/
+                        end
     end
 
     def analyze(gem, version)

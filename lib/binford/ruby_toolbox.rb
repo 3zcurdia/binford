@@ -27,7 +27,7 @@ module Binford
     end
 
     def category
-      @caregory ||= document&.xpath("/html/body/section/div/section/div/div[1]/div[2]/div[2]/div/a/p[2]")&.text
+      @category ||= document&.xpath("/html/body/section/div/section/div/div[1]/div[2]/div[2]/div/a/p[2]")&.text
     end
 
     def document

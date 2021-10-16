@@ -18,7 +18,7 @@ module Binford
       end
 
       def reviewers
-        @reviewers || comments.map { |comment| comment[:author] }.uniq - [author]
+        @reviewers || (comments.map { |comment| comment[:author] }.uniq - [author])
       end
 
       private
